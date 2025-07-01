@@ -175,6 +175,11 @@ export const upload = async (
   endpoint.searchParams.append('name', name);
   const fh = await open(path);
   try {
+    const allowedHosts = ['uploads.github.com', 'objects.githubusercontent.com'];
+    if (!allowedHosts.includes(endpoint.hostname)) {
+      throw new Error(`Unknown upload host: ${endpoint.hostname}`);
+    }
+
     const resp = await github.request({
       method: 'POST',
       url: endpoint.toString(),
